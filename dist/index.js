@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bindingPack = exports.pack = exports.binding = void 0;
+exports.pack = exports.binding = void 0;
 //<input value={binding(useState())}
 const React = __importStar(require("react"));
 function binding(state) {
@@ -35,6 +35,9 @@ function binding(state) {
     };
 }
 exports.binding = binding;
+/**
+ * 构造者类
+ */
 class CLS {
     constructor(c) {
         this.c = c;
@@ -43,6 +46,7 @@ class CLS {
     build() {
         return bindingPack(this.c, this.nowList);
     }
+    //限制 key必须是string类型 number和symbol暂不支持
     bind(key, updateEventName, getter) {
         this.nowList.push({
             key,
@@ -53,14 +57,56 @@ class CLS {
         return this;
     }
 }
+/**
+ * 包装一个组件允许对其进行属性绑定设置，把非bind属性转换为bind属性（双向binding）
+ * @param c 组件
+ * @returns 包装器
+ */
 function pack(c) {
     // type Constructor<C>=C extends React.ComponentType<infer P>? (props:P)=>C:never;
     return new CLS(c);
 }
 exports.pack = pack;
+// type test2=ToOr<["1","2"]>
+//反向推导函数 把对象转换为key的组合 其中s类型是所有key的组合
+function GetKey(args) {
+    return null;
+}
+/**
+ * 对一个对象添加前缀
+ * @param args 用来确定类型的参数 反向推导
+ * @returns null
+ */
+function PrefixObjKeys(args) {
+    return null;
+}
+//把obj key提取出来 添加前缀 再重新转换成obj
+//不能直接使用 可以按照代码自己写来使用
+// function prefixObjectKeys<T extends {[idx:string]:any}>(obj:T){
+//     let keys=GetKey(obj);
+//     return null as PrefixObjectKeys<typeof keys>;
+// }
+//必须是getkey函数的返回值类型
+//此处两行生效
+// let aa=GetKey({b:1,c:3});
+// type ttt=PrefixObjectKeys<typeof aa>;
+function test() {
+}
+// let t=prefixObjectKeys({a:1});
+// type ss=keyof typeof t;
+// type s=PrefixTuple<["a","b"]>
+//实现从对象到keys的或形式
+//添加bind-value 提示，1 获取所有bindkeys中的key，为a|b形式，2 拥有把a|b转换为{a:x,b:x}的形式 3 把a|b转换为bind-a|bind-b
+/**
+ * 绑定包装 理论上支持多重绑定 即bind-bind-data 来实现自动事件切换
+ * @param Comp 组件
+ * @param bindKeys key列表或绑定描述列表
+ * @returns 高阶组件
+ */
 function bindingPack(Comp, bindKeys) {
     //将制定的树形添加bind前缀属性
     //传入的是binding数组
+    //暂不支持修改前缀（因为要匹配类型设定）
     const prefix = 'bind-';
     let keys = bindKeys.map(v => typeof v == "string" ? { key: v } : v);
     let bkeys = keys.map(v => v.key);
@@ -80,7 +126,7 @@ function bindingPack(Comp, bindKeys) {
                 //找到与当前属性一样的描述符 获取记录的事件名
                 let desc = keys.find(v => v.key == rk);
                 //默认使用onChange事件
-                let eventname = desc.updateEventnName ?? "onInput";
+                let eventname = desc.updateEventName ?? "onChange";
                 //添加事件
                 console.log('aaa');
                 function addEvent() {
@@ -149,4 +195,3 @@ function bindingPack(Comp, bindKeys) {
         return React.createElement(Comp, Object.assign({}, nprops));
     };
 }
-exports.bindingPack = bindingPack;
