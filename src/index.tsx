@@ -187,9 +187,9 @@ function bindingPack<T extends React.ComponentType<any>>(Comp: T, bindKeys: (Bin
         //bind前缀的属性 在keys中的
         let nprops = {} as any;
         for (let k in props) {
-            console.log(bkeys)
+            // console.log(bkeys)
             if (k.startsWith(prefix) && bkeys.includes(k.slice(prefix.length))) {
-                console.log(k)
+                // console.log(k)
                 //是绑定属性
                 //转换
                 let rk = k.slice(prefix.length);
@@ -201,7 +201,7 @@ function bindingPack<T extends React.ComponentType<any>>(Comp: T, bindKeys: (Bin
                 //默认使用onChange事件
                 let eventname = desc.updateEventName ?? "onChange";
                 //添加事件
-                console.log('aaa')
+                // console.log('aaa')
                 function addEvent() {
                     nprops[eventname].funcs.push((...args) => {
                         //绑定事件 用来调用更新函数
@@ -261,7 +261,7 @@ function bindingPack<T extends React.ComponentType<any>>(Comp: T, bindKeys: (Bin
                 }
             }
         }
-        console.log(nprops)
+        // console.log(nprops)
         return <Comp {...nprops} />
     }
 }

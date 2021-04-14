@@ -144,9 +144,9 @@ function bindingPack(Comp, bindKeys) {
         //bind前缀的属性 在keys中的
         let nprops = {};
         for (let k in props) {
-            console.log(bkeys);
+            // console.log(bkeys)
             if (k.startsWith(prefix) && bkeys.includes(k.slice(prefix.length))) {
-                console.log(k);
+                // console.log(k)
                 //是绑定属性
                 //转换
                 let rk = k.slice(prefix.length);
@@ -158,7 +158,7 @@ function bindingPack(Comp, bindKeys) {
                 //默认使用onChange事件
                 let eventname = desc.updateEventName ?? "onChange";
                 //添加事件
-                console.log('aaa');
+                // console.log('aaa')
                 function addEvent() {
                     nprops[eventname].funcs.push((...args) => {
                         //绑定事件 用来调用更新函数
@@ -221,7 +221,7 @@ function bindingPack(Comp, bindKeys) {
                 }
             }
         }
-        console.log(nprops);
+        // console.log(nprops)
         return React.createElement(Comp, Object.assign({}, nprops));
     };
 }
