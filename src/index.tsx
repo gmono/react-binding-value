@@ -62,9 +62,15 @@ export interface BindingPropsInfo<CompType extends React.ComponentType<any>, upd
     //提取函数 用于将事件发出的数据对象 转换为一个值用来更新
     getter?(...args): any;
 }
-
+export function empty(){
+    return {
+        value:null,
+        update(){}
+    }
+}
 /**
  * 构造者类
+ * 为了满足必须类型，这里选择把事件变为可选，而bind的值必须赋值，如果没有，就给与empty赋值
  */
 class CLS<C extends React.ComponentType<any>> {
     constructor(private c: C) {

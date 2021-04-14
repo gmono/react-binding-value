@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pack = exports.prop = exports.binding = void 0;
+exports.pack = exports.empty = exports.prop = exports.binding = void 0;
 //<input value={binding(useState())}
 const React = __importStar(require("react"));
 function binding(state) {
@@ -57,8 +57,16 @@ function prop(obj, key) {
         }]);
 }
 exports.prop = prop;
+function empty() {
+    return {
+        value: null,
+        update() { }
+    };
+}
+exports.empty = empty;
 /**
  * 构造者类
+ * 为了满足必须类型，这里选择把事件变为可选，而bind的值必须赋值，如果没有，就给与empty赋值
  */
 class CLS {
     constructor(c) {

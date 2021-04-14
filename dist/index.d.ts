@@ -27,8 +27,13 @@ export interface BindingPropsInfo<CompType extends React.ComponentType<any>, upd
     updateEventName?: updateEP;
     getter?(...args: any[]): any;
 }
+export declare function empty(): {
+    value: any;
+    update(): void;
+};
 /**
  * 构造者类
+ * 为了满足必须类型，这里选择把事件变为可选，而bind的值必须赋值，如果没有，就给与empty赋值
  */
 declare class CLS<C extends React.ComponentType<any>> {
     private c;
