@@ -1,0 +1,12 @@
+{
+  "name": "react-binding-value",
+  "version": "1.0.1",
+  "description": "react binding data",
+  "main": "dist/index.js",
+  "author": "gmono",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^17.0.3",
+    "react": "^17.0.2"
+  }
+}
