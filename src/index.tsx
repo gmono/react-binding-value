@@ -25,6 +25,26 @@ export function binding<S>(state: [S, React.Dispatch<React.SetStateAction<S>>]):
 }
 
 
+/**
+ * 用于bind 对象的成员，这里假设直接修改成员就会触发渲染，并设对应成员有set监听器
+ * 自行监听并启动重渲染，多用于useValue 和 mobx store的属性binding
+ * @param obj 对象
+ * @param key key
+ * @returns 一个binding对象
+ */
+export function prop<T, K extends keyof T>(obj: T, key: K) {
+    let prev=undefined;
+    return binding([obj[key], (v) => {
+        let vv=null;
+        if(v instanceof Function){
+            vv=v(prev)
+        }else vv=v;
+        obj[key]=vv;
+        //prev
+        prev=vv;
+    }]);
+}
+
 export type PropsType<T extends React.ComponentType<any>> =
     (
         T extends React.ComponentClass<infer P, any> ? P :
@@ -60,7 +80,7 @@ class CLS<C extends React.ComponentType<any>> {
             (v: Parameters<PropsType<C>[updateEP]>[0]) => PropsType<C>[keyT]
         ))
         //这是返回值设置 bind函数的 转换过的key变为bind-key类型变为 LinkState
-        : CLS<React.ComponentType<Omit<PropsType<C>, keyT> & Record<PrefixOr<keyT>, LinkedState<PropsType<C>[keyT]>>>> {
+        : CLS<React.ComponentType<Omit<PropsType<C>, keyT|updateEP>&{[k in updateEP]?:PropsType<C>[updateEP]} & Record<PrefixOr<keyT>, LinkedState<PropsType<C>[keyT]>>>> {
         this.nowList.push({
             key,
             updateEventName,

@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pack = exports.binding = void 0;
+exports.pack = exports.prop = exports.binding = void 0;
 //<input value={binding(useState())}
 const React = __importStar(require("react"));
 function binding(state) {
@@ -35,6 +35,28 @@ function binding(state) {
     };
 }
 exports.binding = binding;
+/**
+ * 用于bind 对象的成员，这里假设直接修改成员就会触发渲染，并设对应成员有set监听器
+ * 自行监听并启动重渲染，多用于useValue 和 mobx store的属性binding
+ * @param obj 对象
+ * @param key key
+ * @returns 一个binding对象
+ */
+function prop(obj, key) {
+    let prev = undefined;
+    return binding([obj[key], (v) => {
+            let vv = null;
+            if (v instanceof Function) {
+                vv = v(prev);
+            }
+            else
+                vv = v;
+            obj[key] = vv;
+            //prev
+            prev = vv;
+        }]);
+}
+exports.prop = prop;
 /**
  * 构造者类
  */

@@ -9,6 +9,14 @@ export interface LinkedState<T> {
     update(v: T): void;
 }
 export declare function binding<S>(state: [S, React.Dispatch<React.SetStateAction<S>>]): LinkedState<S>;
+/**
+ * 用于bind 对象的成员，这里假设直接修改成员就会触发渲染，并设对应成员有set监听器
+ * 自行监听并启动重渲染，多用于useValue 和 mobx store的属性binding
+ * @param obj 对象
+ * @param key key
+ * @returns 一个binding对象
+ */
+export declare function prop<T, K extends keyof T>(obj: T, key: K): LinkedState<T[K]>;
 export declare type PropsType<T extends React.ComponentType<any>> = (T extends React.ComponentClass<infer P, any> ? P : T extends React.FunctionComponent<infer P> ? P : never);
 /**
  * 属性转换描述符
@@ -27,7 +35,9 @@ declare class CLS<C extends React.ComponentType<any>> {
     constructor(c: C);
     nowList: any[];
     build(): C;
-    bind<keyT extends (keyof PropsType<C> & string), updateEP extends (keyof PropsType<C>)>(key: keyT, updateEventName: updateEP, getter: ((v: Parameters<PropsType<C>[updateEP]>[0]) => PropsType<C>[keyT])): CLS<React.ComponentType<Omit<PropsType<C>, keyT> & Record<PrefixOr<keyT>, LinkedState<PropsType<C>[keyT]>>>>;
+    bind<keyT extends (keyof PropsType<C> & string), updateEP extends (keyof PropsType<C>)>(key: keyT, updateEventName: updateEP, getter: ((v: Parameters<PropsType<C>[updateEP]>[0]) => PropsType<C>[keyT])): CLS<React.ComponentType<Omit<PropsType<C>, keyT | updateEP> & {
+        [k in updateEP]?: PropsType<C>[updateEP];
+    } & Record<PrefixOr<keyT>, LinkedState<PropsType<C>[keyT]>>>>;
 }
 /**
  * 包装一个组件允许对其进行属性绑定设置，把非bind属性转换为bind属性（双向binding）
