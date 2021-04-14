@@ -1,6 +1,6 @@
 {
   "name": "react-binding-value",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "react binding data",
   "main": "dist/index.js",
   "author": "gmono",
